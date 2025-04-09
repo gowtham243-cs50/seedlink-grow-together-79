@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Circle, ArrowRight, BarChart3, Users, Farm, Sprout } from 'lucide-react';
+import { Circle, ArrowRight, BarChart3, Users, Warehouse, Sprout } from 'lucide-react';
 
 const HowItWorks = () => {
   const steps = [
     {
-      icon: <Farm className="h-10 w-10 text-seedlink-green" />,
+      icon: <Warehouse className="h-10 w-10 text-seedlink-green" />,
       title: "Land Collation",
       description: "Farmers' lands are evaluated and grouped into specialized agricultural funds based on location, crop type, and potential yield."
     },

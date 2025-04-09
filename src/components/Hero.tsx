@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Seedling, TrendingUp, Users } from "lucide-react";
+import { ChevronRight, Leaf, TrendingUp, Users } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -14,7 +14,7 @@ const Hero = () => {
         <div className="flex flex-col items-center text-center space-y-10">
           {/* Subtitle */}
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-seedlink-green/10 text-seedlink-green text-sm font-medium animate-fade-in">
-            <Seedling size={16} className="mr-2" />
+            <Leaf size={16} className="mr-2" />
             Connecting Farmers & Investors for Sustainable Growth
           </div>
           
@@ -49,7 +49,7 @@ const Hero = () => {
             </div>
             
             <div className="p-6 rounded-2xl bg-white/50 border border-seedlink-green/20 shadow-sm hover-lift">
-              <Seedling size={28} className="text-seedlink-green mb-3" />
+              <Leaf size={28} className="text-seedlink-green mb-3" />
               <h3 className="text-3xl font-bold">10K+</h3>
               <p className="text-muted-foreground">Acres Under Management</p>
             </div>
