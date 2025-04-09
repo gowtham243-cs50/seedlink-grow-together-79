@@ -2,6 +2,13 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from 'lucide-react';
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 
 const FarmerSection = () => {
   const benefits = [
@@ -13,9 +20,45 @@ const FarmerSection = () => {
     "Community of like-minded farmers sharing knowledge"
   ];
 
+  const testimonials = [
+    {
+      name: "James Wilson",
+      role: "Corn Farmer, Iowa",
+      image: "https://randomuser.me/api/portraits/men/45.jpg",
+      quote: "Joining SeedLink was the best decision for my farm. Their expert guidance helped increase my yield by 35% while reducing costs."
+    },
+    {
+      name: "Sarah Johnson",
+      role: "Organic Vegetable Farmer, California",
+      image: "https://randomuser.me/api/portraits/women/32.jpg",
+      quote: "The capital from SeedLink investors allowed me to upgrade my irrigation system. Now I use 40% less water and my produce quality has improved significantly."
+    },
+    {
+      name: "Miguel Rodriguez",
+      role: "Coffee Grower, Colombia",
+      image: "https://randomuser.me/api/portraits/men/28.jpg",
+      quote: "SeedLink connected me with premium buyers and helped me implement sustainable practices. My income has increased by 60% over the last two years."
+    },
+    {
+      name: "Priya Patel",
+      role: "Rice Farmer, India",
+      image: "https://randomuser.me/api/portraits/women/65.jpg",
+      quote: "With SeedLink's support, I was able to diversify my crops and implement modern techniques. This has made my farm more resilient to climate changes."
+    }
+  ];
+
   return (
-    <section id="farmers" className="py-20">
-      <div className="container px-4 md:px-6">
+    <section id="farmers" className="py-20 relative">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+          alt="Background" 
+          className="w-full h-full object-cover opacity-5"
+        />
+      </div>
+      
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-seedlink-green/10 text-seedlink-green text-sm font-medium mb-6">
@@ -60,24 +103,37 @@ const FarmerSection = () => {
               />
             </div>
             
-            {/* Testimonial card */}
-            <div className="absolute -bottom-8 -right-8 md:bottom-8 md:-right-12 bg-white p-6 rounded-xl shadow-lg max-w-xs">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-seedlink-green/20 flex items-center justify-center mr-3">
-                  <img 
-                    src="https://randomuser.me/api/portraits/men/45.jpg" 
-                    alt="Farmer" 
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
+            {/* Testimonials carousel */}
+            <div className="absolute -bottom-24 md:-bottom-8 -right-4 md:-right-12 w-full md:w-[120%] max-w-md">
+              <h3 className="text-xl font-bold mb-4 text-center md:text-left">What Farmers Say</h3>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {testimonials.map((testimonial, index) => (
+                    <CarouselItem key={index}>
+                      <div className="bg-white p-6 rounded-xl shadow-lg">
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 rounded-full bg-seedlink-green/20 flex items-center justify-center mr-3">
+                            <img 
+                              src={testimonial.image} 
+                              alt={testimonial.name} 
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="font-bold">{testimonial.name}</h4>
+                            <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                          </div>
+                        </div>
+                        <p className="text-sm italic">"{testimonial.quote}"</p>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex justify-center mt-4">
+                  <CarouselPrevious className="relative static left-0 right-auto translate-y-0 mr-2" />
+                  <CarouselNext className="relative static right-0 left-auto translate-y-0" />
                 </div>
-                <div>
-                  <h4 className="font-bold">James Wilson</h4>
-                  <p className="text-sm text-muted-foreground">Corn Farmer, Iowa</p>
-                </div>
-              </div>
-              <p className="text-sm italic">
-                "Joining SeedLink was the best decision for my farm. Their expert guidance helped increase my yield by 35% while reducing costs."
-              </p>
+              </Carousel>
             </div>
           </div>
         </div>

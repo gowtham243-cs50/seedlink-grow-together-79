@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Leaf, TrendingUp, Users } from "lucide-react";
@@ -7,10 +6,17 @@ const Hero = () => {
   return (
     <section className="relative pt-28 pb-20 overflow-hidden">
       {/* Background elements */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+          alt="Background" 
+          className="w-full h-full object-cover opacity-10"
+        />
+      </div>
       <div className="absolute -top-20 -right-20 w-80 h-80 bg-seedlink-green/10 rounded-full blur-3xl"></div>
       <div className="absolute top-40 -left-20 w-60 h-60 bg-seedlink-lightgreen/10 rounded-full blur-3xl"></div>
       
-      <div className="container px-4 md:px-6">
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center text-center space-y-10">
           {/* Subtitle */}
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-seedlink-green/10 text-seedlink-green text-sm font-medium animate-fade-in">

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Circle, ArrowRight, BarChart3, Users, Warehouse, Sprout } from 'lucide-react';
 
@@ -29,7 +28,17 @@ const HowItWorks = () => {
   return (
     <section id="how-it-works" className="py-20 bg-secondary relative">
       <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-background to-transparent"></div>
-      <div className="container px-4 md:px-6">
+      
+      {/* Background image */}
+      <div className="absolute inset-0 z-0 opacity-5">
+        <img 
+          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+          alt="Background" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">How SeedLink Works</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
