@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { Mail, Lock, Eye, EyeOff, Leaf, LogIn, ExternalLink } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Leaf, UserPlus, ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 
-const SignIn = () => {
+const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -44,7 +45,8 @@ const SignIn = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
+    // Form validation
+    if (!email || !password || !confirmPassword) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -53,10 +55,28 @@ const SignIn = () => {
       return;
     }
     
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!agreeTerms) {
+      toast({
+        title: "Error",
+        description: "You must agree to the Terms of Service and Privacy Policy",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
@@ -64,15 +84,16 @@ const SignIn = () => {
       if (error) throw error;
       
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+        title: "Account created",
+        description: "Please check your email to verify your account.",
       });
       
-      // Auth state listener will handle navigation
+      // After signup, redirect to sign in
+      navigate('/sign-in');
     } catch (error: any) {
       toast({
-        title: "Error signing in",
-        description: error.message || "There was an error signing in. Please try again.",
+        title: "Error signing up",
+        description: error.message || "There was an error creating your account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -80,7 +101,7 @@ const SignIn = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignUp = async () => {
     setIsLoading(true);
     
     try {
@@ -96,8 +117,8 @@ const SignIn = () => {
       // Redirect is handled by Supabase
     } catch (error: any) {
       toast({
-        title: "Error signing in with Google",
-        description: error.message || "There was an error signing in with Google. Please try again.",
+        title: "Error signing up with Google",
+        description: error.message || "There was an error signing up with Google. Please try again.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -120,8 +141,8 @@ const SignIn = () => {
               </div>
               <span className="text-2xl font-display font-bold">SeedLink</span>
             </div>
-            <h1 className="text-3xl font-bold text-deepblue-dark">Welcome Back</h1>
-            <p className="text-muted-foreground mt-2">Sign in to continue to your account</p>
+            <h1 className="text-3xl font-bold text-deepblue-dark">Create Your Account</h1>
+            <p className="text-muted-foreground mt-2">Join SeedLink and start investing in agriculture</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -144,23 +165,15 @@ const SignIn = () => {
               </div>
               
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium text-deepblue-600">
-                    Password
-                  </label>
-                  <Link 
-                    to="/forgot-password" 
-                    className="text-sm font-medium text-seedlink-green hover:text-seedlink-darkgreen"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
+                <label htmlFor="password" className="block text-sm font-medium text-deepblue-600">
+                  Password
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Create a password"
                     className="pl-10 pr-10"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -178,20 +191,42 @@ const SignIn = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="remember" 
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+              <div className="space-y-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-deepblue-600">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    className="pl-10"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
-                  <label
-                    htmlFor="remember"
-                    className="text-sm font-medium text-muted-foreground cursor-pointer"
-                  >
-                    Remember me
-                  </label>
                 </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="terms" 
+                  checked={agreeTerms}
+                  onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-sm text-muted-foreground"
+                >
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-seedlink-green hover:underline">
+                    Terms of Service
+                  </Link>
+                  {" "}and{" "}
+                  <Link to="/privacy" className="text-seedlink-green hover:underline">
+                    Privacy Policy
+                  </Link>
+                </label>
               </div>
             </div>
             
@@ -200,8 +235,8 @@ const SignIn = () => {
               className="w-full bg-gradient-to-r from-deepblue-500 to-deepblue-dark hover:from-deepblue-dark hover:to-deepblue-800 text-white py-6"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
-              <LogIn className="ml-2 h-5 w-5" />
+              {isLoading ? "Creating Account..." : "Create Account"}
+              <UserPlus className="ml-2 h-5 w-5" />
             </Button>
 
             <div className="relative flex items-center justify-center mt-6">
@@ -215,7 +250,7 @@ const SignIn = () => {
               type="button"
               variant="outline"
               className="w-full border-2 border-deepblue-100 hover:bg-deepblue-100/10 hover:border-deepblue-300 flex items-center justify-center gap-2 py-6"
-              onClick={handleGoogleSignIn}
+              onClick={handleGoogleSignUp}
               disabled={isLoading}
             >
               <svg 
@@ -230,16 +265,16 @@ const SignIn = () => {
                 <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
               </svg>
-              Sign in with Google
+              Sign up with Google
             </Button>
             
             <div className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link 
-                to="/sign-up" 
+                to="/sign-in" 
                 className="font-medium text-seedlink-green hover:text-seedlink-darkgreen"
               >
-                Sign Up
+                Sign In
               </Link>
             </div>
           </form>
@@ -250,25 +285,28 @@ const SignIn = () => {
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-deepblue-500 to-deepblue-900 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <img 
-            src="https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+            src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
             alt="Agriculture" 
             className="w-full h-full object-cover"
           />
         </div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
-          <h2 className="text-3xl font-bold mb-6 text-center">Growing Communities Together</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">Join the Agricultural Revolution</h2>
           <p className="text-lg text-center max-w-md text-white/90 mb-8">
-            Join our platform that connects investors with farmers to create sustainable 
-            agricultural growth and prosperity for all.
+            Invest in sustainable agriculture and help farmers grow while earning competitive returns on your investment.
           </p>
-          <div className="grid grid-cols-2 gap-6 w-full max-w-md">
+          <div className="grid grid-cols-1 gap-6 w-full max-w-md">
             <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg">
-              <h3 className="font-bold text-xl mb-1">18%</h3>
-              <p className="text-sm text-white/80">Average Annual Returns</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg">
-              <h3 className="font-bold text-xl mb-1">2,500+</h3>
-              <p className="text-sm text-white/80">Farmers Supported</p>
+              <p className="text-white/80">
+                "SeedLink has transformed how I invest in agriculture. The platform is intuitive, and the returns have exceeded my expectations."
+              </p>
+              <div className="mt-4 flex items-center">
+                <div className="w-10 h-10 rounded-full bg-white/30"></div>
+                <div className="ml-3">
+                  <p className="font-semibold">Sarah Johnson</p>
+                  <p className="text-sm text-white/70">Investor since 2021</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -277,4 +315,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
