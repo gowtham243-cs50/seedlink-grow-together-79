@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { Mail, Lock, Eye, EyeOff, Leaf, LogIn, ExternalLink } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Leaf, LogIn } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
+
+const REDIRECT_URL = "https://localhost:8081";
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +25,7 @@ const SignIn = () => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        navigate('/');
+        window.location.href = REDIRECT_URL;
       }
     };
     
@@ -33,7 +35,7 @@ const SignIn = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session) {
-          navigate('/');
+          window.location.href = REDIRECT_URL;
         }
       }
     );
@@ -68,7 +70,7 @@ const SignIn = () => {
         description: "You have successfully signed in.",
       });
       
-      // Auth state listener will handle navigation
+      // Direct redirection will be handled by the auth state listener
     } catch (error: any) {
       toast({
         title: "Error signing in",

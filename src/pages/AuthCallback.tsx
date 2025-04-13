@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
+const REDIRECT_URL = "https://localhost:8081";
+
 const AuthCallback = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -27,8 +29,8 @@ const AuthCallback = () => {
         description: "You have been signed in successfully.",
       });
       
-      // Redirect to home page
-      navigate('/');
+      // Redirect to the specified URL
+      window.location.href = REDIRECT_URL;
     };
     
     handleAuthCallback();
