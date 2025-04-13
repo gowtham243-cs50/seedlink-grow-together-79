@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,10 +35,10 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex items-center">
+          <Link to="/" className="flex items-center">
             <div className="h-8 w-8 rounded-full bg-gradient-to-r from-seedlink-green to-seedlink-darkgreen"></div>
             <span className="ml-2 text-xl font-display font-bold">SeedLink</span>
-          </div>
+          </Link>
         </div>
 
         {/* Desktop Menu */}
@@ -57,9 +58,11 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="outline" className="rounded-full hover:bg-seedlink-green/10">
-            Sign In
-          </Button>
+          <Link to="/sign-in">
+            <Button variant="outline" className="rounded-full hover:bg-seedlink-green/10">
+              Sign In
+            </Button>
+          </Link>
           <Button 
             className="rounded-full bg-seedlink-green hover:bg-seedlink-darkgreen text-white"
           >
@@ -111,9 +114,11 @@ const Navbar = () => {
             </a>
           </nav>
           <div className="flex flex-col space-y-3 px-4">
-            <Button variant="outline" className="w-full justify-center rounded-full">
-              Sign In
-            </Button>
+            <Link to="/sign-in" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="outline" className="w-full justify-center rounded-full">
+                Sign In
+              </Button>
+            </Link>
             <Button className="w-full justify-center rounded-full bg-seedlink-green hover:bg-seedlink-darkgreen text-white">
               Get Started
             </Button>

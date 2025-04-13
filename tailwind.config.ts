@@ -67,6 +67,20 @@ export default {
 					beige: '#F5F5DC',
 					gold: '#FFD700'
 				},
+				deepblue: {
+					DEFAULT: '#1A2C42',
+					dark: '#0F1A2A',
+					light: '#3E5880',
+					100: '#E5EAF2',
+					200: '#C7D0E2',
+					300: '#94A6C4',
+					400: '#5D749F',
+					500: '#324A78',
+					600: '#1A2C42',
+					700: '#0F1A2A',
+					800: '#091628',
+					900: '#04101C'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
