@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,10 @@ import { Mail, Lock, Eye, EyeOff, Leaf, LogIn } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 
-const REDIRECT_URL = "https://localhost:8081";
+// Update the REDIRECT_URL to be a function that includes auth parameters
+const getRedirectUrl = (userId: string, token: string) => {
+  return `http://localhost:8080/dash?userId=${userId}&token=${token}`;
+};
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -25,7 +27,9 @@ const SignIn = () => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        window.location.href = REDIRECT_URL;
+        const userId = data.session.user.id;
+        const accessToken = data.session.access_token;
+        window.location.href = getRedirectUrl(userId, accessToken);
       }
     };
     
@@ -35,7 +39,9 @@ const SignIn = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session) {
-          window.location.href = REDIRECT_URL;
+          const userId = session.user.id;
+          const accessToken = session.access_token;
+          window.location.href = getRedirectUrl(userId, accessToken);
         }
       }
     );
@@ -64,20 +70,23 @@ const SignIn = () => {
       });
       
       if (error) throw error;
+
+      // Get user data
+      const userId = data.user?.id;
+      const accessToken = data.session?.access_token;
       
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
       
-      // Direct redirection will be handled by the auth state listener
+      window.location.href = getRedirectUrl(userId!, accessToken!);
     } catch (error: any) {
       toast({
         title: "Error signing in",
         description: error.message || "There was an error signing in. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -89,13 +98,16 @@ const SignIn = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/auth/callback'
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         }
       });
       
       if (error) throw error;
       
-      // Redirect is handled by Supabase
     } catch (error: any) {
       toast({
         title: "Error signing in with Google",

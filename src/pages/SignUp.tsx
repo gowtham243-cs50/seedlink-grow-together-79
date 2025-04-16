@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { Mail, Lock, Eye, EyeOff, Leaf, UserPlus, ExternalLink } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Leaf, UserPlus, ExternalLink, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,6 +12,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ const SignUp = () => {
     e.preventDefault();
     
     // Form validation
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !name) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -79,6 +79,11 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            display_name: name
+          }
+        }
       });
       
       if (error) throw error;
@@ -147,6 +152,24 @@ const SignUp = () => {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="name" className="block text-sm font-medium text-deepblue-600">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    className="pl-10"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-deepblue-600">
                   Email Address

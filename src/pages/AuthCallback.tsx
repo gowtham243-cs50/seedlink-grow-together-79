@@ -1,36 +1,48 @@
-
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
-const REDIRECT_URL = "https://localhost:8081";
+// Make sure this matches exactly with the URL configured in Supabase dashboard
+const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL || "http://localhost:8080/dash";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
-      
-      if (error) {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        console.log('Auth response:', { data, error }); // Debug log
+        
+        if (error) throw error;
+        
+        if (!data.session) {
+          throw new Error('No session data received');
+        }
+
+        const userId = data.session.user.id;
+        const accessToken = data.session.access_token;
+
+        toast({
+          title: "Successfully authenticated",
+          description: "You have been signed in successfully.",
+        });
+
+        // Redirect with auth data
+        navigate(`/dash?userId=${userId}&token=${accessToken}`);
+      } catch (error: any) {
+        console.error('Authentication error:', error);
         toast({
           title: "Authentication error",
-          description: error.message,
+          description: error.message || 'Failed to authenticate',
           variant: "destructive",
         });
         navigate('/sign-in');
-        return;
       }
-      
-      toast({
-        title: "Successfully authenticated",
-        description: "You have been signed in successfully.",
-      });
-      
-      // Redirect to the specified URL
-      window.location.href = REDIRECT_URL;
     };
     
     handleAuthCallback();
